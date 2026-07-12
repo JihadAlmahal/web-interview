@@ -12,28 +12,33 @@ import ReceiptIcon from '@mui/icons-material/Receipt'
 import { TodoListForm } from './TodoListForm'
 
 // Simulate network
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+//const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const fetchTodoLists = () => {
-  return sleep(1000).then(() =>
-    Promise.resolve({
-      '0000000001': {
-        id: '0000000001',
-        title: 'First List',
-        todos: ['First todo of first list!'],
-      },
-      '0000000002': {
-        id: '0000000002',
-        title: 'Second List',
-        todos: ['First todo of second list!'],
-      },
-    })
-  )
+const API_BASE_URL = 'http://localhost:3001'
+
+const fetchTodoLists = async () => {
+  const response = await fetch(`${API_BASE_URL}/todo-lists`)
+  return response.json()
 }
+
+
 
 export const TodoLists = ({ style }) => {
   const [todoLists, setTodoLists] = useState({})
   const [activeList, setActiveList] = useState()
+
+  const saveTodoList = async (id, { todos }) => {
+  const response = await fetch(`${API_BASE_URL}/todo-lists/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ todos }),
+  })
+  const updatedList = await response.json()
+  setTodoLists((current) => ({
+     ...current, [id]: updatedList }))
+}
 
   useEffect(() => {
     fetchTodoLists().then(setTodoLists)
@@ -61,13 +66,7 @@ export const TodoLists = ({ style }) => {
         <TodoListForm
           key={activeList} // use key to make React recreate component to reset internal state
           todoList={todoLists[activeList]}
-          saveTodoList={(id, { todos }) => {
-            const listToUpdate = todoLists[id]
-            setTodoLists({
-              ...todoLists,
-              [id]: { ...listToUpdate, todos },
-            })
-          }}
+          saveTodoList={saveTodoList}
         />
       )}
     </Fragment>
