@@ -28,7 +28,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
         <form
           style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
         >
-          {todos.map((name, index) => (
+          {todos.map((todo, index) => (
             <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
               <Typography sx={{ margin: '8px' }} variant='h6'>
                 {index + 1}
@@ -36,15 +36,27 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               <TextField
                 sx={{ flexGrow: 1, marginTop: '1rem' }}
                 label='What to do?'
-                value={name}
+                value={todo.text}
                 onChange={(event) => {
                   setTodos([
                     // immutable update
                     ...todos.slice(0, index),
-                    event.target.value,
+                    { ...todo, text: event.target.value },
                     ...todos.slice(index + 1),
                   ])
                 }}
+              />
+              <input 
+              type='checkbox'
+              checked={todo.completed}
+              onChange={(event) => {
+                setTodos([
+                  // immutable update
+                  ...todos.slice(0, index),
+                  { ...todo, completed: event.target.checked },
+                  ...todos.slice(index + 1),
+                ])
+              }}
               />
               <Button
                 sx={{ margin: '8px' }}
@@ -67,7 +79,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               type='button'
               color='primary'
               onClick={() => {
-                setTodos([...todos, ''])
+                setTodos([...todos, { text: '', completed: false }])
               }}
             >
               Add Todo <AddIcon />
