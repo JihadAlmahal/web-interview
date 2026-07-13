@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { TextField, Card, CardContent, CardActions, Button, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
@@ -6,17 +6,26 @@ import AddIcon from '@mui/icons-material/Add'
 export const TodoListForm = ({ todoList, saveTodoList }) => {
   const [todos, setTodos] = useState(todoList.todos)
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
+ 
+
+  const isFirstRender = useRef(true)
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    const timeoutId = setTimeout(() => {
     saveTodoList(todoList.id, { todos })
-  }
+    }, 300)
+    return () => clearTimeout(timeoutId)
+  }, [todos, todoList.id, saveTodoList])
 
   return (
     <Card sx={{ margin: '0 1rem' }}>
       <CardContent>
         <Typography component='h2'>{todoList.title}</Typography>
         <form
-          onSubmit={handleSubmit}
           style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
         >
           {todos.map((name, index) => (
@@ -62,9 +71,6 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               }}
             >
               Add Todo <AddIcon />
-            </Button>
-            <Button type='submit' variant='contained' color='primary'>
-              Save
             </Button>
           </CardActions>
         </form>
