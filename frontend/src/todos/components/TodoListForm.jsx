@@ -6,8 +6,6 @@ import AddIcon from '@mui/icons-material/Add'
 export const TodoListForm = ({ todoList, saveTodoList }) => {
   const [todos, setTodos] = useState(todoList.todos)
 
- 
-
   const isFirstRender = useRef(true)
 
   useEffect(() => {
@@ -20,6 +18,41 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
     }, 100)
     return () => clearTimeout(timeoutId)
   }, [todos, todoList.id, saveTodoList])
+
+
+  const dueDateDifference = (todo) => {
+    const today = new Date()
+    const due = new Date(todo.dueDate)
+
+    today.setHours(0, 0, 0, 0);
+    due.setHours(0, 0, 0, 0);
+
+    
+    const differenceInTime = due.getTime() - today.getTime()
+    
+    
+    if (!todo.dueDate) {
+      return ''
+    }
+    if (todo.completed) {
+      return 'Completed'
+    }
+
+    const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24))
+
+   
+
+    if (differenceInDays < 0) {
+      return `Overdue by ${Math.abs(differenceInDays)} days`
+    }
+    if (differenceInDays === 0) {
+      return 'Due today'
+    }
+    
+    return `Due in ${differenceInDays} days`
+  
+
+  }
 
   return (
     <Card sx={{ margin: '0 1rem' }}>
@@ -46,6 +79,23 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                   ])
                 }}
               />
+              <TextField
+                sx={{ flexGrow: 1, marginTop: '1rem', marginLeft: '8px' }}
+                label='Due Date'
+                InputLabelProps={{ shrink: true }}
+                type='date'
+                value={todo.dueDate}
+                onChange={(event) => {
+                  setTodos([
+                    ...todos.slice(0, index),
+                    { ...todo, dueDate: event.target.value },
+                    ...todos.slice(index + 1),
+                  ])
+                }}
+              />
+              <Typography sx={{ margin: '8px' }} variant='body1'>
+                {dueDateDifference(todo)}
+              </Typography>
               <input 
               type='checkbox'
               checked={todo.completed}
@@ -78,7 +128,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               type='button'
               color='primary'
               onClick={() => {
-                setTodos([...todos, { text: '', completed: false }])
+                setTodos([...todos, { text: '', completed: false,  dueDate: '' }])
               }}
             >
               Add Todo <AddIcon />
