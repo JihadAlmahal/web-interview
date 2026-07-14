@@ -51,14 +51,20 @@ export const TodoLists = ({ style }) => {
         <CardContent>
           <Typography component='h2'>My Todo Lists</Typography>
           <List>
-            {Object.keys(todoLists).map((key) => (
+            {Object.keys(todoLists).map((key) => {
+              const list = todoLists[key]
+
+              const completed = list.todos.length > 0 && list.todos.every((todo) => todo.completed)
+
+              return (
+            (
               <ListItemButton key={key} onClick={() => setActiveList(key)}>
                 <ListItemIcon>
                   <ReceiptIcon />
                 </ListItemIcon>
-                <ListItemText primary={todoLists[key].title} />
+                <ListItemText primary={completed ? `Completed: ${list.title}` : `In Progress: ${list.title}`} />
               </ListItemButton>
-            ))}
+            ))})}
           </List>
         </CardContent>
       </Card>

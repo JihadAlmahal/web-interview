@@ -17,7 +17,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
     }
     const timeoutId = setTimeout(() => {
     saveTodoList(todoList.id, { todos })
-    }, 300)
+    }, 100)
     return () => clearTimeout(timeoutId)
   }, [todos, todoList.id, saveTodoList])
 
@@ -51,7 +51,6 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               checked={todo.completed}
               onChange={(event) => {
                 setTodos([
-                  // immutable update
                   ...todos.slice(0, index),
                   { ...todo, completed: event.target.checked },
                   ...todos.slice(index + 1),
