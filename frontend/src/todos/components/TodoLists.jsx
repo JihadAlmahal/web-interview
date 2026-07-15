@@ -62,7 +62,8 @@ export const TodoLists = ({ style }) => {
                 <ListItemIcon>
                   <ReceiptIcon />
                 </ListItemIcon>
-                <ListItemText primary={completed ? `Completed: ${list.title}` : `In Progress: ${list.title}`} />
+                <ListItemText primary={list.title}
+                secondary= {completed ? `Completed` : `In Progress`} />
               </ListItemButton>
             ))})}
           </List>

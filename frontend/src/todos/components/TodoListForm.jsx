@@ -21,6 +21,11 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
 
 
   const dueDateDifference = (todo) => {
+    
+    if (!todo.dueDate) {
+      return ''
+    }
+    
     const today = new Date()
     const due = new Date(todo.dueDate)
 
@@ -31,9 +36,6 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
     const differenceInTime = due.getTime() - today.getTime()
     
     
-    if (!todo.dueDate) {
-      return ''
-    }
     if (todo.completed) {
       return 'Completed'
     }
@@ -54,6 +56,19 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
 
   }
 
+
+  const uptadeTodo = (index, update) => {
+    setTodos([
+      ...todos.slice(0, index),
+      {
+        ...todos[index],
+        ...update,
+      },
+     
+      ...todos.slice(index + 1),
+    ])
+  }
+
   return (
     <Card sx={{ margin: '0 1rem' }}>
       <CardContent>
@@ -71,12 +86,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                 label='What to do?'
                 value={todo.text}
                 onChange={(event) => {
-                  setTodos([
-                    // immutable update
-                    ...todos.slice(0, index),
-                    { ...todo, text: event.target.value },
-                    ...todos.slice(index + 1),
-                  ])
+                  uptadeTodo(index, { text: event.target.value })
                 }}
               />
               <TextField
@@ -86,11 +96,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                 type='date'
                 value={todo.dueDate}
                 onChange={(event) => {
-                  setTodos([
-                    ...todos.slice(0, index),
-                    { ...todo, dueDate: event.target.value },
-                    ...todos.slice(index + 1),
-                  ])
+                  uptadeTodo(index, { dueDate: event.target.value })
                 }}
               />
               <Typography sx={{ margin: '8px' }} variant='body1'>
@@ -100,11 +106,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               type='checkbox'
               checked={todo.completed}
               onChange={(event) => {
-                setTodos([
-                  ...todos.slice(0, index),
-                  { ...todo, completed: event.target.checked },
-                  ...todos.slice(index + 1),
-                ])
+                uptadeTodo(index, { completed: event.target.checked })
               }}
               />
               <Button
