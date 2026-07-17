@@ -25,7 +25,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
     if (!todo.dueDate) {
       return ''
     }
-    
+
     const today = new Date()
     const due = new Date(todo.dueDate)
 
@@ -57,7 +57,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
   }
 
 
-  const uptadeTodo = (index, update) => {
+  const updateTodo = (index, update) => {
     setTodos([
       ...todos.slice(0, index),
       {
@@ -86,7 +86,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                 label='What to do?'
                 value={todo.text}
                 onChange={(event) => {
-                  uptadeTodo(index, { text: event.target.value })
+                  updateTodo(index, { text: event.target.value })
                 }}
               />
               <TextField
@@ -96,7 +96,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
                 type='date'
                 value={todo.dueDate}
                 onChange={(event) => {
-                  uptadeTodo(index, { dueDate: event.target.value })
+                  updateTodo(index, { dueDate: event.target.value })
                 }}
               />
               <Typography sx={{ margin: '8px' }} variant='body1'>
@@ -106,7 +106,7 @@ export const TodoListForm = ({ todoList, saveTodoList }) => {
               type='checkbox'
               checked={todo.completed}
               onChange={(event) => {
-                uptadeTodo(index, { completed: event.target.checked })
+                updateTodo(index, { completed: event.target.checked })
               }}
               />
               <Button
